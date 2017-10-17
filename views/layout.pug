@@ -1,0 +1,19 @@
+doctype html
+html
+    head
+        title= title
+        meta(charset = 'utf-8')
+        meta(name='viewport', content='width=device-width, initial-scale=1.0')
+        link(rel='stylesheet', href='https://cdn.bootcss.com/tether/1.4.0/css/tether.css')
+        link(rel='stylesheet', href='https://cdn.bootcss.com/bootstrap/4.0.0-beta/css/bootstrap.css')
+        link(rel='stylesheet', href='/stylesheets/style.css')
+        block user-stylesheet
+        script(src='https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js')
+        script(src='https://cdn.bootcss.com/popper.js/1.12.5/umd/popper.js')
+        script(src='https://cdn.bootcss.com/tether/1.4.0/js/tether.js')
+        script(src='https://cdn.bootcss.com/bootstrap/4.0.0-beta/js/bootstrap.js')
+        script(src='https://cdn.bootcss.com/socket.io/2.0.3/socket.io.js')
+        script(src='https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js')
+        block user-script
+    body
+        block content

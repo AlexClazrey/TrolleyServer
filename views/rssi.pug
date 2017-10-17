@@ -1,0 +1,7 @@
+extends layout
+
+block content
+    each device in deviceRssi
+        p #{device.device}
+            each rssi in device.rssi
+                #{rssi}

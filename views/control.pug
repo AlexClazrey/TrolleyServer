@@ -1,0 +1,34 @@
+extends layout
+
+block user-script
+    script(src="/javascripts/control.js")
+    script.
+        $(function() { control.init(); });
+
+block content
+    .container
+        .row.mb-2
+            h1.display-4.title-control #{title}
+        .row.mb-2.row-car-btn.row-car-btn-start
+            .col-6.col-btn-car
+                button.btn-lg.btn-warning.btn-car.btn-start#carStart(type="button") START
+            .col-6.col-btn-car
+                button.btn-lg.btn-warning.btn-car.btn-stop#carStop(type="button") STOP
+        .row.mb-2.row-car-btn.row-car-btn-dir
+            .col-4.col-btn-car
+                button.btn-lg.btn-primary.btn-car.btn-dir.btn-left#carLeft(type="button") LEFT
+            .col-4.col-btn-car
+                button.btn-lg.btn-secondary.btn-car.btn-dir.btn-beep#carPause(type="button") BEEP
+            .col-4.col-btn-car
+                button.btn-lg.btn-primary.btn-car.btn-dir.btn-right#carRight(type="button") RIGHT
+        .row.mb-2.row-car-btn.row-car-btn-back
+            .col-12.col-btn-car
+                button.btn-lg.btn-warning.btn-car.btn-backward#carBack(type="button") BACKWARD
+        .row.mb-2.row-car-btn.row-car-btn-servo
+            .col-6.col-btn-car
+                button.btn-lg.btn-info.btn-car.btn-servo-start#servoStart(type="button") SERVO START
+            .col-6.col-btn-car
+                button.btn-lg.btn-info.btn-car.btn-servo-stop#servoStop(type="button") SERVO STOP
+        .row.mb-2.row-car-btn.rwo-car-btn-sonic
+            .col-12.col-btn-car
+                button.btn-lg.btn-info.btn-car.btn-scan#sonicScan(type="button") SONIC SCAN
