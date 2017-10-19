@@ -1,0 +1,14 @@
+extends layout
+
+block user-script
+    script(src='/javascripts/vue-components.js')
+    script(src='/javascripts/rssi/rssi.js')
+    script(src='/javascripts/rssi/rssi.model.js')
+    script(src='/javascripts/rssi/rssi.vue.js')
+    script.
+        $(function() {
+          rssi.init($('#rssi-container'));
+        });
+
+block content
+    .container-fluid#rssi-container

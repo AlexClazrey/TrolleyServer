@@ -11,6 +11,7 @@ browser.on('connection', function(socket) {
     car.emit('command', data);
   });
   socket.on('disconnect', function() {
+    io.removeConnected(socket.id);
     console.log('#', socket.id, 'browser disconnected');
   });
 });
@@ -19,6 +20,7 @@ car.on('connection', function(socket) {
   io.addConnected(socket);
   console.log('#', socket.id, 'car connected');
   socket.on('disconnect', function() {
+    io.removeConnected(socket.id);
     console.log('#', socket.id, 'car disconnected');
   });
 });
