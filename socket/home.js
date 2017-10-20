@@ -1,4 +1,4 @@
-var io = require('./socket');
+const io = require('./socket');
 require('./rssi');
 require('./command');
 

@@ -1,7 +1,7 @@
-var io = require('./socket');
+const io = require('./socket');
 
-var car = io.of('car');
-var browser = io.of('browser');
+const car = io.of('car');
+const browser = io.of('browser');
 
 browser.on('connection', function(socket) {
   io.addConnected(socket);

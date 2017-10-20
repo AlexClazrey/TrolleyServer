@@ -1,12 +1,12 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
-var rssiSocket = require('../socket/rssi');
+const rssiSocket = require('../socket/rssi');
 
-var deviceRssi = {};
+const deviceRssi = {};
 
-var deviceFilterEnabled = true;
-var deviceFilter = [
+const deviceFilterEnabled = true;
+const deviceFilter = [
   "3C:A3:08:AC:58:8D",
   "3C:A3:08:AC:37:BB",
   "D4:36:39:BC:08:F3",
@@ -15,13 +15,13 @@ var deviceFilter = [
 
 router.post('/', function (req, res) {
   // parse
-  var device = req.body.device;
-  var rssi = req.body.rssi;
-  var timestamp = req.body.timestamp;
-  var tags = req.body.tags;
+  const device = req.body.device;
+  const rssi = req.body.rssi;
+  const timestamp = req.body.timestamp;
+  const tags = req.body.tags;
 
   // save
-  var record = {
+  const record = {
     rssi: rssi,
     timestamp: timestamp,
     tags: tags
@@ -51,7 +51,7 @@ router.post('/', function (req, res) {
 });
 
 router.get('/', function (req, res) {
-  var result = Object.keys(deviceRssi)
+  const result = Object.keys(deviceRssi)
     .filter(function (item) {
       if(deviceFilterEnabled)
         return deviceFilter.indexOf(item) > -1;

@@ -1,6 +1,6 @@
-var io = require('./socket');
+const io = require('./socket');
 
-var rssiSpace = io.of('rssi');
+const rssiSpace = io.of('rssi');
 rssiSpace.on('connection', function(socket) {
   io.addConnected(socket);
   console.log('rssi browser connected', socket.id);

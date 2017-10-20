@@ -1,35 +1,35 @@
-var control = (function() {
-  var socket;
-  var carStart = function() {
+const control = (function() {
+  let socket;
+  const carStart = function() {
     socket.emit('car-command', 'front');
   };
-  var carStop = function() {
+  const carStop = function() {
     socket.emit('car-command', 'pause');
   };
-  var carLeft = function() {
+  const carLeft = function() {
     socket.emit('car-command', 'left');
   };
-  var carRight = function() {
+  const carRight = function() {
     socket.emit('car-command', 'right');
   };
-  var servoStart = function() {
+  const servoStart = function() {
     socket.emit('car-command', 'servo start');
   };
-  var servoStop = function() {
+  const servoStop = function() {
     socket.emit('car-command', 'servo stop');
   };
 
-  var init = function() {
+  const init = function() {
     socket = io('/browser');
-    var btnStart = document.getElementById('carStart');
+    const btnStart = document.getElementById('carStart');
     btnStart.addEventListener('click', function() {
       carStart();
     });
-    var btnStop  = document.getElementById('carStop');
+    const btnStop  = document.getElementById('carStop');
     btnStop.addEventListener('click', function() {
       carStop();
     });
-    var btnLeft  = document.getElementById('carLeft');
+    const btnLeft  = document.getElementById('carLeft');
     btnLeft.addEventListener('mousedown', function() {
       carLeft();
     });
@@ -42,7 +42,7 @@ var control = (function() {
     btnLeft.addEventListener('touchend', function() {
       carStart();
     });
-    var btnRight  = document.getElementById('carRight');
+    const btnRight  = document.getElementById('carRight');
     btnRight.addEventListener('mousedown', function() {
       carRight();
     });

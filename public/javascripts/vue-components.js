@@ -1,5 +1,5 @@
 (function () {
-  var makeBoolean = function (args, name, tag, fallback, item) {
+  const makeBoolean = function (args, name, tag, fallback, item) {
     if (args === undefined) {
       return !!fallback;
     } else if (typeof args === 'boolean') {
@@ -12,8 +12,8 @@
     }
   };
   
-  var randStr = function (context) {
-    var result = Math.random().toString(36).substring(2);
+  const randStr = function (context) {
+    let result = Math.random().toString(36).substring(2);
     while (context && context[result]) {
       result = Math.random().toString(36).substring(2);
     }
@@ -57,7 +57,7 @@
     '</span>',
     computed: {
       _appearArray: function () {
-        var result = [];
+        const result = [];
         this.format.forEach(function (buttonItem) {
           result.push(makeBoolean(buttonItem.appear, 'appear condition', buttonItem.name, true, undefined));
         });
@@ -92,11 +92,11 @@
         return this.settings && this.settings.contentClass || '';
       },
       _content: function () {
-        var type = this._component;
-        var contentClass = this._contentClass;
-        var settings = this.settings;
-        var data = this.data;
-        var date;
+        const type = this._component;
+        const contentClass = this._contentClass;
+        const settings = this.settings;
+        let data = this.data;
+        let date;
         if(data === undefined || data === null) {
           return '<p></p>';
         }
@@ -177,8 +177,8 @@
     '</div>',
     computed: {
       _content: function () {
-        var content = this.content;
-        var result = [{}];
+        const content = this.content;
+        const result = [{}];
         if (this.loading) {
           console.log('loading triggered');
           this.format.forEach(function (item) {
@@ -197,11 +197,11 @@
         }
       },
       _format: function() {
-        var content = this.content;
+        const content = this.content;
         if (content === undefined || content === null || content.length === 0) {
           // console.log('change to format');
           return this.format.map(function(item) {
-            var result = Object.assign({}, item);
+            const result = Object.assign({}, item);
             result.component = 'text';
             return result;
           });
@@ -222,7 +222,7 @@
           ]
         }
         return buttonFormat.map(function (buttonItem) {
-          var result = Object.assign({}, buttonItem);
+          const result = Object.assign({}, buttonItem);
           result.appear = function () {
             return makeBoolean(buttonItem.appear, 'appear condition', buttonFormat.name, true, item);
           };
@@ -294,7 +294,7 @@
       }
     },
     mounted: function () {
-      var element = this;
+      const element = this;
       $('#' + this._id).on('hide.bs.modal', function (event) {
         console.log('modal close');
         element.$emit('modal-close')
@@ -302,7 +302,7 @@
     }
   });
   
-  var placeholderValue = '_$placeholder_$';
+  const placeholderValue = '_$placeholder_$';
   Vue.component('vue-select', {
     props: ['label', 'placeholder', 'placeholderCanSelect', 'options', 'value', 'onChange', 'randId'],
     template:
@@ -390,7 +390,7 @@
     '</div>',
     computed: {
       _textStyle: function() {
-        var result = '';
+        let result = '';
         if(this.color) {
           result += 'color: ' + this.color + ';';
         }
@@ -400,7 +400,7 @@
         return result;
       },
       _titleStyle: function() {
-        var result = '';
+        let result = '';
         if(this.size) {
           result += 'font-size: ' + this.size + ';';
         }
@@ -459,8 +459,8 @@
     },
     computed: {
       _content: function () {
-        var content = this.content;
-        var result = [{}];
+        const content = this.content;
+        const result = [{}];
         if (this.loading) {
           console.log('loading triggered');
           this.format.forEach(function (item) {
@@ -479,11 +479,11 @@
         }
       },
       _format: function() {
-        var content = this.content;
+        const content = this.content;
         if (content === undefined || content === null || content.length === 0) {
           // console.log('change to format');
           return this.format.map(function(item) {
-            var result = Object.assign({}, item);
+            const result = Object.assign({}, item);
             result.component = 'text';
             return result;
           });
@@ -493,7 +493,7 @@
         }
       },
       _allSelected: function() {
-        for(var i = 0; i < this.content.length; i++) {
+        for(let i = 0; i < this.content.length; i++) {
           if(!this.selectArray[i]) {
             return false;
           }
@@ -519,7 +519,7 @@
           ]
         }
         return buttonFormat.map(function (buttonItem) {
-          var result = Object.assign({}, buttonItem);
+          const result = Object.assign({}, buttonItem);
           result.appear = function () {
             return makeBoolean(buttonItem.appear, 'appear condition', buttonFormat.name, true, item);
           };
@@ -543,14 +543,14 @@
         this.$emit('select-change');
       },
       selectAll: function() {
-        for(var i = 0; i < this.content.length; i++) {
+        for(let i = 0; i < this.content.length; i++) {
           Vue.set(this.selectArray, i, true);
           this.content[i]._selected = true;
         }
         this.$emit('select-change');
       },
       deselectAll: function() {
-        for(var i = 0; i < this.content.length; i++) {
+        for(let i = 0; i < this.content.length; i++) {
           Vue.set(this.selectArray, i, false);
           this.content[i]._selected = false;
         }

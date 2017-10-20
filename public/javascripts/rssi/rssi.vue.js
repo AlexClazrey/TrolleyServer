@@ -1,7 +1,7 @@
 rssi.vue = (function() {
-  var overview = (function() {
-    var comp = {};
-    var onMount = function() {
+  const overview = (function() {
+    const comp = {};
+    const onMount = function() {
       comp.comp = new Vue({
         el: '#rssi-records',
         data: {
@@ -14,7 +14,7 @@ rssi.vue = (function() {
         }
       });
     };
-    var onChange = function () {
+    const onChange = function () {
     };
     return {
       html:
@@ -38,7 +38,7 @@ rssi.vue = (function() {
     };
   })();
 
-  var init = function(container) {
+  const init = function(container) {
     container.html(overview.html);
     overview.onMount();
   };

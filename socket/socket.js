@@ -1,7 +1,7 @@
-var socketIO = require('socket.io');
-var io = socketIO();
+const socketIO = require('socket.io');
+const io = socketIO();
 
-var connectedSockets = {};
+const connectedSockets = {};
 
 io.getConnected = function(namespace) {
   if(namespace) {
