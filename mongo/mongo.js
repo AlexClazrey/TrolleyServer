@@ -42,7 +42,6 @@ function dbMaker() {
           reject(err);
         }
         resolve(db);
-        db.close();
       });
     });
   };

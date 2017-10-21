@@ -2,8 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const rssiSocket = require('../socket/rssi');
-
-const deviceRssi = {};
+const mongodbRssi = require('../mongo/mongo.rssi');
 
 const deviceFilterEnabled = true;
 const deviceFilter = [
@@ -19,26 +18,44 @@ router.post('/', function (req, res) {
   const rssi = req.body.rssi;
   const timestamp = req.body.timestamp;
   const tags = req.body.tags;
+  const group = req.body.scanGroup;
+  const phone = req.body.phone;
+  let distance = req.body.distance;
+  let angle = [req.body.anglePhi, req.body.angleTheta];
 
-  // save
-  const record = {
-    rssi: rssi,
-    timestamp: timestamp,
-    tags: tags
-  };
-  if (deviceRssi[device]) {
-    deviceRssi[device].push(record);
+  if(!distance || distance === 'null') {
+    distance = null;
   } else {
-    deviceRssi[device] = [record];
+    distance = parseFloat(distance);
   }
+  angle = angle.map(function (item) {
+    if(!item || item === 'null')
+      return null;
+    else
+      return parseFloat(item);
+  });
 
-  // trigger socket event
+// save
+  const record = {
+    device,
+    phone,
+    tag: tags,
+    time: new Date(parseInt(timestamp)),
+    group,
+    distance,
+    angle,
+    RSSI: parseInt(rssi),
+  };
+
+  // trigger socket and database event
   if(deviceFilterEnabled) {
     if(deviceFilter.indexOf(device) > -1) {
       rssiSocket.rssiAdd(device, rssi, timestamp, tags);
+      mongodbRssi.addHandler(record);
     }
   } else {
     rssiSocket.rssiAdd(device, rssi, timestamp, tags);
+    mongodbRssi.addHandler(record);
   }
 
   // reply
@@ -51,23 +68,6 @@ router.post('/', function (req, res) {
 });
 
 router.get('/', function (req, res) {
-  const result = Object.keys(deviceRssi)
-    .filter(function (item) {
-      if(deviceFilterEnabled)
-        return deviceFilter.indexOf(item) > -1;
-      else
-        return true;
-    })
-    .map(function (item) {
-      return {device: item, records: deviceRssi[item]};
-    });
-  res.render("rssi", {
-    title: 'rssi list',
-    deviceRssi: result
-  });
-});
-
-router.get('/auto', function (req,res) {
   res.render('rssi-vue', {
     title: 'rssi list'
   });

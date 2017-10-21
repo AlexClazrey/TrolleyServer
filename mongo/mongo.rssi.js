@@ -20,8 +20,8 @@ const rssiSchema = [
   {name: 'tag', type: 'string'},
   {name: 'group', type: 'string'},
   {name: 'time', type: Date, required: true},
-  {name: 'distance', type: 'number'},
-  {name: 'angle', type: Array, elType: 'number'},
+  {name: 'distance', type: 'number', nullable: true},
+  {name: 'angle', type: Array, elType: 'number', elNullable: true},
   {name: 'RSSI', type: 'number', required: true}
 ];
 
@@ -47,30 +47,37 @@ const checkSchema = function (record, schema) {
     // check type requirements
     let recordItem = record[schemaItem.name];
     if (schemaItem.type) {
-      if (typeof schemaItem.type === 'string') {
-        if (typeof recordItem !== schemaItem.type) {
-          flag = false;
-          return;
-        }
+      if (recordItem === null && schemaItem.nullable) {
       } else {
-        if (!(recordItem instanceof schemaItem.type)) {
-          flag = false;
-          return;
+        if (typeof schemaItem.type === 'string') {
+          if (typeof recordItem !== schemaItem.type) {
+            flag = false;
+            return;
+          }
+        } else {
+          if (!(recordItem instanceof schemaItem.type)) {
+            flag = false;
+            return;
+          }
         }
       }
     }
     if (!flag)
       return;
+
     // check element type
     if (schemaItem.elType && (recordItem instanceof Array)) {
       recordItem.forEach(function (element) {
-        if (typeof schemaItem.elType === 'string') {
-          if (typeof element !== schemaItem.elType) {
-            flag = false;
-          }
+        if(element === null && schemaItem.elNullable) {
         } else {
-          if (!(element instanceof schemaItem.elType)) {
-            flag = false;
+          if (typeof schemaItem.elType === 'string') {
+            if (typeof element !== schemaItem.elType) {
+              flag = false;
+            }
+          } else {
+            if (!(element instanceof schemaItem.elType)) {
+              flag = false;
+            }
           }
         }
       });
@@ -102,7 +109,7 @@ const addRssi = function (record) {
         if (document) {
           rssi.insertOne(document).then(
             function (result) {
-              if(result.insertedCount === 1)
+              if (result.insertedCount === 1)
                 resolve();
               else {
                 console.warn('[Mongodb] insert count not match 1.', result.insertedCount);
@@ -129,20 +136,20 @@ const addRssi = function (record) {
 
 const queryRssi = function (query, projection, sort) {
   return db.connect().then(
-    function(db) {
+    function (db) {
       return new Promise(function (resolve, reject) {
         const rssi = db.collection('rssi');
         let cursor;
-        if(query) {
+        if (query) {
           cursor = rssi.find(query);
         } else {
           cursor = rssi.find();
         }
-        if(cursor && projection)
+        if (cursor && projection)
           cursor = cursor.project(projection);
-        if(cursor && sort)
+        if (cursor && sort)
           cursor = cursor.sort(sort);
-        if(cursor) {
+        if (cursor) {
           resolve(cursor.toArray());
         } else {
           console.error('[Mongodb] query cursor return failed');
@@ -151,13 +158,24 @@ const queryRssi = function (query, projection, sort) {
         db.close();
       });
     },
-    function() {
+    function () {
       console.error('[Mongodb] rssi db connect failed');
     }
   );
 };
 
+const addHandler = function (record) {
+  addRssi(record).then(function () {
+    console.log('[Mongodb] record added');
+  }, function () {
+    console.error('[Mongodb] record add failed');
+  }).catch(function (err) {
+    console.error(__filename, err);
+  })
+};
+
 module.exports = {
+  addHandler,
   addRssi,
   queryRssi
 };
