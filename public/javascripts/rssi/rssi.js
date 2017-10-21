@@ -1,5 +1,5 @@
-var rssi = (function() {
-  var init = function(container) {
+const rssi = (function() {
+  const init = function(container) {
     rssi.model.init(container);
     rssi.vue.init(container);
   };

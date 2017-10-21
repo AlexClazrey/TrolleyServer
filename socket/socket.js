@@ -19,6 +19,22 @@ io.addConnected = function(socket) {
   connectedSockets[socket.id] = socket;
 };
 
+io.logOnAnything = function (socket, prefix_opt) {
+  const onevent = socket.onevent;
+  socket.onevent = function (packet) {
+    const args = packet.data || [];
+    onevent.call(this, packet);    // original call
+    packet.data = ["*"].concat(args);
+    onevent.call(this, packet);      // additional call to catch-all
+  };
+  socket.on('*', function (event, data) {
+    if (prefix_opt)
+      console.log(prefix_opt, event, data, 'from', socket.id);
+    else
+      console.log(event, data, 'from', socket.id);
+  });
+};
+
 io.removeConnected = function(id) {
   if(typeof id === 'string') {
     delete connectedSockets[id];
