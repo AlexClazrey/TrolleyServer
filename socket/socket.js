@@ -38,7 +38,7 @@ io.logOnAnything = function (socket, prefix_opt) {
 io.removeConnected = function(id) {
   if(typeof id === 'string') {
     delete connectedSockets[id];
-  } else if(id.id) {
+  } else if(id && id.id) {
     delete connectedSockets[id.id];
   } else {
     console.warn(__filename, 'Remove connected: cannot parse connection id');

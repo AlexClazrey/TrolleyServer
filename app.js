@@ -12,6 +12,7 @@ const index = require('./routes/index');
 const users = require('./routes/users');
 const rssi = require('./routes/rssi');
 const control = require('./routes/control');
+const experiment = require('./routes/experiment');
 
 const app = express();
 app.socketIO = socketIO;
@@ -38,6 +39,7 @@ app.use('/', index);
 app.use('/users', users);
 app.use('/rssi', rssi);
 app.use('/control', control);
+app.use('/experiment', experiment);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

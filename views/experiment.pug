@@ -1,0 +1,33 @@
+extends layout
+
+block user-script
+    script(src="/javascripts/experiment.js")
+    script.
+        $(function() { experiment.init(); });
+
+block content
+    .container
+        .row.mb-2
+            h1.display-4.title-control #{title}
+        .row.mb-2
+            table.table
+                thead
+                    tr
+                        th Phi
+                        th Theta
+                        th Time
+                tbody
+                    tr
+                        td#p-angle-phi #{angle.phi}
+                        td#p-angle-theta #{angle.theta}
+                        td#p-time #{angle.timestamp}
+        .row.mb-2.row-btn
+            .col
+                button.btn.btn-lg.btn-primary.btn-experiment#btn-add-phi(type="button") PHI ADD 10
+            .col
+                button.btn.btn-lg.btn-primary.btn-experiment#btn-minus-phi(type="button") PHI MINUS 10
+        .row.mb-2.row-btn
+            .col
+                button.btn.btn-lg.btn-primary.btn-experiment#btn-add-theta(type="button") THETA ADD 10
+            .col
+                button.btn.btn-lg.btn-primary.btn-experiment#btn-minus-theta(type="button") THETA MINUS 10
