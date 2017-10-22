@@ -6,5 +6,7 @@ module.exports = {
   mongodbName: 'trolley',
   mongodbAuth: false,
   mongodbUsername: 'username',
-  mongodbPassword: 'password'
+  mongodbPassword: 'password',
+
+  experimentTimeout: 2000,
 };

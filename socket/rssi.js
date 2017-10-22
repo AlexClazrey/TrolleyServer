@@ -6,6 +6,7 @@ const rssiSpace = io.of('rssi');
 rssiSpace.on('connection', function(socket) {
   io.addConnected(socket);
   console.log('rssi browser connected', socket.id);
+  // stat page functions
   socket.on('get-scan-groups', function() {
     mongodbRssi.getScanGroups().then(function(data) {
       socket.emit('get-scan-groups', data);
@@ -62,6 +63,10 @@ io.rssiAdd = function(device, rssi, timestamp, tag) {
     timestamp: timestamp,
     tag: tag
   });
+};
+
+io.rssiAddV2 = function(data) {
+  rssiSpace.emit('rssi-record-v2', data);
 };
 
 module.exports = io;

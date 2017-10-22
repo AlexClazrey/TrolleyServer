@@ -9,6 +9,20 @@ rssiStat.model = (function () {
     socket.on('disconnect', function () {
       console.warn('socket lost connection');
     });
+    socket.on('rssi-record-v2', function(data) {
+      if(rssiStat.vue && rssiStat.vue.overview && rssiStat.vue.overview.comp) {
+        const comp = rssiStat.vue.overview.comp.comp;
+        if(data.scanGroup === comp.selectedScanGroup) {
+          comp.addRecordHandler(data);
+        }
+        if(comp.scanGroupRecords.find(function(item) {
+            return item._id === data.scanGroup;
+          }) === undefined) {
+          console.log('refresh scan group');
+          comp.getScanGroups();
+        }
+      }
+    })
   };
 
 // result schema

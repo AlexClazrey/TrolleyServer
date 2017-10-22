@@ -68,7 +68,7 @@ const checkSchema = function (record, schema) {
     // check element type
     if (schemaItem.elType && (recordItem instanceof Array)) {
       recordItem.forEach(function (element) {
-        if(element === null && schemaItem.elNullable) {
+        if (element === null && schemaItem.elNullable) {
         } else {
           if (typeof schemaItem.elType === 'string') {
             if (typeof element !== schemaItem.elType) {
@@ -150,12 +150,18 @@ const queryRssi = function (query, projection, sort) {
         if (cursor && Object.keys(sort).length > 0)
           cursor = cursor.sort(sort);
         if (cursor) {
-          cursor.toArray().then(resolve, reject);
+          cursor.toArray().then(function (data) {
+            db.close();
+            resolve(data);
+          }, function (err) {
+            db.close();
+            reject(err);
+          });
         } else {
           console.error('[Mongodb] query cursor return failed');
+          db.close();
           reject();
         }
-        db.close();
       });
     },
     function () {
@@ -181,9 +187,9 @@ const addHandler = function (record) {
 //  "maxTime" : ISODate("2017-10-21T17:45:09.408Z"),
 //  "tag": max(tag),
 // }
-const getScanGroups = function() {
+const getScanGroups = function () {
   return db.connect().then(
-    function(db) {
+    function (db) {
       return new Promise(function (resolve, reject) {
         const rssi = db.collection('rssi');
         rssi.aggregate(
@@ -200,9 +206,9 @@ const getScanGroups = function() {
                 $max: "$tag"
               },
             }
-          }], function(err, data) {
+          }], function (err, data) {
             db.close();
-            if(err) {
+            if (err) {
               console.error('[Mongodb] aggregate error', err);
               reject(err);
             }

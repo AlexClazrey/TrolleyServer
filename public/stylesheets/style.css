@@ -34,4 +34,8 @@ button.btn-lg {
 .device-rssi-column {
   list-style: none; }
 
+ul.row {
+  padding: 0;
+  margin: 0; }
+
 /*# sourceMappingURL=style.css.map */

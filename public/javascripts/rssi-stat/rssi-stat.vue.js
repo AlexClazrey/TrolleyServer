@@ -14,6 +14,7 @@ rssiStat.vue = (function() {
             {name: 'RSSI', key: 'RSSI'}
           ],
           rssiRecordsArray: [],
+          hideTable: false,
         },
         computed: {
           scanGroupTexts: function() {
@@ -34,32 +35,44 @@ rssiStat.vue = (function() {
           getRssiRecords: function() {
             rssiStat.model.queryRssiWithScanGroup(this.selectedScanGroup).then(data => {
               this.rssiRecords = {};
-              data.forEach(item => {
-                const device = item.device;
-                if(this.rssiRecords[device]) {
-                  this.rssiRecords[device].push(item);
-                } else {
-                  this.rssiRecords[device] = [item];
-                }
-              });
+              data.forEach(this.addRecordHandler);
               this.refreshRssiTable();
             });
           },
           scanGroupSelectChange: function(value) {
             if(this.selectedScanGroup !== value) {
               this.selectedScanGroup = value;
-              this.getRssiRecords();
+              if(this.selectedScanGroup !== '') {
+                this.getRssiRecords();
+              } else {
+                this.rssiRecords = {};
+                this.refreshRssiTable();
+              }
             }
           },
           refreshRssiTable: function() {
             this.rssiRecordsArray = Object.values(this.rssiRecords);
+          },
+          addRecordHandler: function(item) {
+            const device = item.device;
+            if(this.rssiRecords[device]) {
+              this.rssiRecords[device].push(item);
+            } else {
+              this.rssiRecords[device] = [item];
+            }
+          },
+          hideTableHandler: function() {
+            this.hideTable = true;
+          },
+          showTableHandler: function() {
+            this.hideTable = false;
           }
         }
       });
     };
     const onChange = function() {
       comp.comp.getScanGroups();
-      comp.comp.getRssiRecords();
+      // comp.comp.getRssiRecords();
     };
     return {
       html: '<h1 class="display-4 title-middle">Rssi Stat</h1>' +
@@ -72,8 +85,8 @@ rssiStat.vue = (function() {
       '<div class="container" style="float: left; width: 800px;">' +
       '<vue-select ' +
       'label="选择分组" ' +
-      'placeholder="显示全部" ' +
-      'placeholder-can-select="false" ' +
+      'placeholder="请选择" ' +
+      ':placeholder-can-select="true" ' +
       'v-bind:options="scanGroupTexts" ' +
       'v-bind:value="selectedScanGroup" ' +
       'v-bind:on-change="scanGroupSelectChange" ' +
@@ -81,19 +94,65 @@ rssiStat.vue = (function() {
       '></vue-select>' +
       '</div>' +
       '</div>' +
+      '<div class="col">' +
+      '<vue-button ' +
+      'class="mr-2" ' +
+      'name="刷新分组" ' +
+      ':callback="getScanGroups" ' +
+      ':appear="true" ' +
+      ':disabled="false" ' +
+      'button-class="btn-info" ' +
+      '></vue-button>' +
+      '<vue-button ' +
+      'class="mr-2" ' +
+      'name="隐藏表格" ' +
+      ':callback="hideTableHandler" ' +
+      ':appear="!hideTable && rssiRecordsArray.length > 0" ' +
+      ':disabled="false" ' +
+      'button-class="btn-info" ' +
+      '></vue-button>' +
+      '<vue-button ' +
+      'class="mr-2" ' +
+      'name="显示表格" ' +
+      ':callback="showTableHandler" ' +
+      ':appear="hideTable && rssiRecordsArray.length > 0" ' +
+      ':disabled="false" ' +
+      'button-class="btn-info" ' +
+      '></vue-button>' +
+      '</div>' +
       '</div>' +
       '<ul class="row">' +
       '<li class="col-3 device-rssi-column" v-for="deviceRecords in rssiRecordsArray">' +
-      '<h3>{{ deviceRecords[0] && deviceRecords[0].device }}</h3>' +
-      '<vue-table ' +
-      ':hide-button="true" ' +
-      ':format="rssiFormat" ' +
-      ':content="deviceRecords" ' +
-      ':hide-table-off="true" ' +
-      '>' +
-      '</vue-table>' +
+      '<vue-rssi-stat ' +
+      ':title="deviceRecords[0].device" ' +
+      ':records="deviceRecords" ' +
+      ':table-format="rssiFormat" ' +
+      ':hide-table="hideTable" ' +
+      '></vue-rssi-stat>' +
       '</li>' +
       '</ul>' +
+      '<div class="row">' +
+      '<div class="col">' +
+      '<div class="container">' +
+      '<vue-n-calculator style="width: 200px;" :d1="1" :d2="2"></vue-n-calculator>' +
+      '</div> ' +
+      '</div>' +
+      '<div class="col">' +
+      '<div class="container">' +
+      '<vue-n-calculator style="width: 200px;" :d1="1" :d2="2"></vue-n-calculator>' +
+      '</div> ' +
+      '</div>' +
+      '<div class="col">' +
+      '<div class="container">' +
+      '<vue-d-calculator style="width: 200px;" :d1="1"></vue-d-calculator>' +
+      '</div> ' +
+      '</div>' +
+      '<div class="col">' +
+      '<div class="container">' +
+      '<vue-d-calculator style="width: 200px;" :d1="1"></vue-d-calculator>' +
+      '</div> ' +
+      '</div>' +
+      '</div>' +
       '</div>',
       onMount,
       onChange,
@@ -106,6 +165,7 @@ rssiStat.vue = (function() {
     overview.onChange();
   };
   return {
-    init
+    init,
+    overview
   };
 })();

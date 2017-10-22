@@ -2,10 +2,11 @@
 const express = require('express');
 const router = express.Router();
 const io = require('../socket/home');
+const settings = require('../settings/settings');
 
 /* GET servo control page. */
 router.get('/', function (req, res) {
-  res.setTimeout(2000, function() {
+  res.setTimeout(settings.experimentTimeout, function() {
     res.render('experiment', {
       title: 'Remote Trolley Experiment',
       angle: {}

@@ -10,7 +10,8 @@ const deviceFilter = [
   "3C:A3:08:AC:58:8D",
   "3C:A3:08:AC:37:BB",
   "D4:36:39:BC:08:F3",
-  "34:15:13:1A:E4:6A"
+  "34:15:13:1A:E4:6A",
+  "00:15:83:31:7E:6A"
 ];
 
 router.post('/', function (req, res) {
@@ -49,13 +50,9 @@ router.post('/', function (req, res) {
   };
 
   // trigger socket and database event
-  if(deviceFilterEnabled) {
-    if(deviceFilter.indexOf(device) > -1) {
-      rssiSocket.rssiAdd(device, rssi, timestamp, tag);
-      mongodbRssi.addHandler(record);
-    }
-  } else {
+  if(!deviceFilterEnabled || deviceFilter.indexOf(device) > -1) {
     rssiSocket.rssiAdd(device, rssi, timestamp, tag);
+    rssiSocket.rssiAddV2(record);
     mongodbRssi.addHandler(record);
   }
 
