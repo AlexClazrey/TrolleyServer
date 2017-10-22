@@ -1,3 +1,4 @@
+"use strict";
 const express = require('express');
 const router = express.Router();
 
@@ -17,8 +18,8 @@ router.post('/', function (req, res) {
   const device = req.body.device;
   const rssi = req.body.rssi;
   const timestamp = req.body.timestamp;
-  const tags = req.body.tags;
-  const group = req.body.scanGroup;
+  const tag = req.body.tags;
+  const scanGroup = req.body.scanGroup;
   const phone = req.body.phone;
   let distance = req.body.distance;
   let angle = [req.body.anglePhi, req.body.angleTheta];
@@ -39,9 +40,9 @@ router.post('/', function (req, res) {
   const record = {
     device,
     phone,
-    tag: tags,
+    tag: tag,
     time: new Date(parseInt(timestamp)),
-    group,
+    scanGroup,
     distance,
     angle,
     RSSI: parseInt(rssi),
@@ -50,11 +51,11 @@ router.post('/', function (req, res) {
   // trigger socket and database event
   if(deviceFilterEnabled) {
     if(deviceFilter.indexOf(device) > -1) {
-      rssiSocket.rssiAdd(device, rssi, timestamp, tags);
+      rssiSocket.rssiAdd(device, rssi, timestamp, tag);
       mongodbRssi.addHandler(record);
     }
   } else {
-    rssiSocket.rssiAdd(device, rssi, timestamp, tags);
+    rssiSocket.rssiAdd(device, rssi, timestamp, tag);
     mongodbRssi.addHandler(record);
   }
 
@@ -71,6 +72,12 @@ router.get('/', function (req, res) {
   res.render('rssi-vue', {
     title: 'rssi list'
   });
+});
+
+router.get('/stat', function (req, res) {
+  res.render('rssi-stat', {
+    title: 'rssi stat page'
+  })
 });
 
 module.exports = router;

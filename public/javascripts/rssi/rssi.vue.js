@@ -7,7 +7,7 @@ rssi.vue = (function() {
         data: {
           rssiRecords: rssi.model.rssiRecords,
           rssiFormat: [
-            {name: '标签', key: 'tags'},
+            {name: '标签', key: 'tag'},
             {name: '时间', key: 'timestamp', component: 'milliTime'},
             {name: 'RSSI', key: 'rssi'}
           ]

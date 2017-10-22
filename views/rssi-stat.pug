@@ -1,0 +1,12 @@
+extends layout
+
+block user-script
+    script(src='/javascripts/vue-components.js')
+    script(src='/javascripts/rssi-stat/rssi-stat.js')
+    script(src='/javascripts/rssi-stat/rssi-stat.vue.js')
+    script(src='/javascripts/rssi-stat/rssi-stat.model.js')
+    script.
+        $(function() { rssiStat.init($('#rssi-stat-container')); });
+
+block content
+    .container#rssi-stat-container

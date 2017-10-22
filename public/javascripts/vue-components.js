@@ -96,7 +96,6 @@
         const contentClass = this._contentClass;
         const settings = this.settings;
         let data = this.data;
-        let date;
         if(data === undefined || data === null) {
           return '<p></p>';
         }
@@ -105,22 +104,23 @@
         } else if (type === 'number') {
           return '<p class="' + contentClass + '">' + data.toString() + '</p>';
         } else if (type === 'datetime' || type === 'time' || type === 'milliTime') {
+          // console.log(data);
           // prepare a date
-          if(!(data instanceof Date)) {
-            if (typeof data === 'string') {
-              data = parseInt(data);
+          if (typeof data === 'string' && data.indexOf(' ') === -1 && data.indexOf('-') === -1) {
+            let data2 = parseInt(data);
+            if(!isNaN(data2)) {
+              data = data2;
             }
-            date = new Date(data);
-          } else {
-            date = data;
           }
+          let str;
           // format to string
           if(type === 'datetime')
-            str = $.format.date(date, 'yyyy-MM-dd HH:mm');
+            str = moment(data).format('yyyy-MM-dd HH:mm');
           else if(type === 'time')
-            str = $.format.date(date, 'HH:mm:ss');
+            str = moment(data).format('HH:mm:ss');
           else if(type === 'milliTime')
-            str = $.format.date(date, 'HH:mm:ss.SSS');
+            str = moment(data).format('HH:mm:ss.SSS');
+          // console.log(str);
           return '<p class="' + contentClass + '">' + str + '</p>';
         } else if (type === 'id') {
           return '<p class="' + contentClass + '">' + (this.index + 1) + '</p>';
@@ -307,9 +307,9 @@
     props: ['label', 'placeholder', 'placeholderCanSelect', 'options', 'value', 'onChange', 'randId'],
     template:
     '<div class="form-group row">' +
-    '<label class="col-sm-2 col-form-label" :for="\'select-\' + label + \'-\' + _randId">{{ label }}</label>' +
+    '<label class="col-sm-2 col-form-label" style="font-size: 18px" :for="\'select-\' + label + \'-\' + _randId">{{ label }}</label>' +
     '<div class="col-sm-10">' +
-    '<select :id="\'select-\' + label + \'-\' + _randId" v-model="selectValue" class="form-control" @change="valueChange">' +
+    '<select :id="\'select-\' + label + \'-\' + _randId" style="height: 41px" v-model="selectValue" class="form-control" @change="valueChange">' +
     '<option value="_$placeholder_$" selected :disabled="_placeholderDisabled">{{ placeholder }}</option>' +
     '<option v-for="item in _options" :value="item.value">{{ item.name }}</option>' +
     '</select>' +
@@ -362,7 +362,7 @@
     },
     methods: {
       valueChange: function () {
-        console.log('_vue', this.selectValue, placeholderValue);
+        // console.log('_vue', this.selectValue, placeholderValue);
         if (this.selectValue === placeholderValue) {
           this.onChange && this.onChange('');
         } else {
@@ -374,7 +374,7 @@
   
   Vue.component('vue-chapter-title', {
     props: ['name'],
-    template: '<div class="row mb-2"><h3>{{ name }}</h3></div>'
+    template: '<div class="row mb-2"><div class="col"><h3>{{ name }}</h3></div></div>'
   });
   
   Vue.component('vue-line-p', {

@@ -1,3 +1,4 @@
+"use strict";
 const io = require('./socket');
 
 const car = io.of('car');
@@ -23,6 +24,9 @@ car.on('connection', function(socket) {
     io.removeConnected(socket.id);
     console.log('#', socket.id, 'car disconnected');
   });
+  socket.on('obstacle', function(data) {
+    console.log('[CAR] obstacle ' + data.distance + 'cm' + ' at ' + data.direction + 'deg' + ' at ' + new Date(parseInt(data.timestamp)));
+  })
 });
 
 module.exports = io;

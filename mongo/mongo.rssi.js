@@ -8,7 +8,7 @@ const db = dbMaker();
 //    phone: string,
 //    tag: string,
 //    time: Date,
-//    group: string,
+//    scanGroup: string,
 //    distance: number, 球坐标系-r
 //    angle: [number(phi), number(theta)], 球坐标系-[phi, theta]
 //    RSSI: number
@@ -18,7 +18,7 @@ const rssiSchema = [
   {name: 'device', type: 'string', required: true, regex: /([A-F0-9]{2}:){5}[A-F0-9]{2}/},
   {name: 'phone', type: 'string'},
   {name: 'tag', type: 'string'},
-  {name: 'group', type: 'string'},
+  {name: 'scanGroup', type: 'string'},
   {name: 'time', type: Date, required: true},
   {name: 'distance', type: 'number', nullable: true},
   {name: 'angle', type: Array, elType: 'number', elNullable: true},
@@ -145,12 +145,12 @@ const queryRssi = function (query, projection, sort) {
         } else {
           cursor = rssi.find();
         }
-        if (cursor && projection)
+        if (cursor && Object.keys(projection).length > 0)
           cursor = cursor.project(projection);
-        if (cursor && sort)
+        if (cursor && Object.keys(sort).length > 0)
           cursor = cursor.sort(sort);
         if (cursor) {
-          resolve(cursor.toArray());
+          cursor.toArray().then(resolve, reject);
         } else {
           console.error('[Mongodb] query cursor return failed');
           reject();
@@ -174,8 +174,52 @@ const addHandler = function (record) {
   })
 };
 
+// result schema
+// {
+//  "_id" : "<scanGroup>",
+//  "minTime" : ISODate("2017-10-21T17:45:08.165Z"),
+//  "maxTime" : ISODate("2017-10-21T17:45:09.408Z"),
+//  "tag": max(tag),
+// }
+const getScanGroups = function() {
+  return db.connect().then(
+    function(db) {
+      return new Promise(function (resolve, reject) {
+        const rssi = db.collection('rssi');
+        rssi.aggregate(
+          [{
+            $group: {
+              _id: "$scanGroup",
+              minTime: {
+                $min: "$time"
+              },
+              maxTime: {
+                $max: "$time"
+              },
+              tag: {
+                $max: "$tag"
+              },
+            }
+          }], function(err, data) {
+            db.close();
+            if(err) {
+              console.error('[Mongodb] aggregate error', err);
+              reject(err);
+            }
+            resolve(data);
+          }
+        );
+      });
+    },
+    function () {
+      console.error('[Mongodb] rssi db connect failed');
+    }
+  );
+};
+
 module.exports = {
   addHandler,
   addRssi,
-  queryRssi
+  queryRssi,
+  getScanGroups,
 };
