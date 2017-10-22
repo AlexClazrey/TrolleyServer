@@ -132,22 +132,14 @@ rssiStat.vue = (function() {
       '</li>' +
       '</ul>' +
       '<div class="row">' +
-      '<div class="col">' +
+      '<div class="col" v-for="index in 4">' +
       '<div class="container">' +
       '<vue-n-calculator style="width: 200px;" :d1="1" :d2="2"></vue-n-calculator>' +
       '</div> ' +
       '</div>' +
-      '<div class="col">' +
-      '<div class="container">' +
-      '<vue-n-calculator style="width: 200px;" :d1="1" :d2="2"></vue-n-calculator>' +
-      '</div> ' +
       '</div>' +
-      '<div class="col">' +
-      '<div class="container">' +
-      '<vue-d-calculator style="width: 200px;" :d1="1"></vue-d-calculator>' +
-      '</div> ' +
-      '</div>' +
-      '<div class="col">' +
+      '<div class="row">' +
+      '<div class="col" v-for="index in 4">' +
       '<div class="container">' +
       '<vue-d-calculator style="width: 200px;" :d1="1"></vue-d-calculator>' +
       '</div> ' +
