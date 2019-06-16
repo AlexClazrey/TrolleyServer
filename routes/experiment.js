@@ -15,7 +15,11 @@ router.get('/', function (req, res) {
   io.experiment.getDirection().then(function(data) {
     res.render('experiment', {
       title: 'Remote Trolley Experiment',
-      angle: data
+      angle: {
+        phi: data.phi,
+        theta: data.theta,
+        timestamp: data.timestamp && new Date(data.timestamp),
+      }
     });
   }, function() {
     res.render('experiment', {

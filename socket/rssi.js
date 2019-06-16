@@ -56,14 +56,14 @@ rssiSpace.on('connection', function(socket) {
   })
 });
 
-io.rssiAdd = function(device, rssi, timestamp, tag) {
-  rssiSpace.emit('rssi-record', {
-    device: device,
-    rssi: rssi,
-    timestamp: timestamp,
-    tag: tag
-  });
-};
+// io.rssiAdd = function(device, rssi, timestamp, tag) {
+//   rssiSpace.emit('rssi-record', {
+//     device: device,
+//     rssi: rssi,
+//     timestamp: timestamp,
+//     tag: tag
+//   });
+// };
 
 io.rssiAddV2 = function(data) {
   rssiSpace.emit('rssi-record-v2', data);

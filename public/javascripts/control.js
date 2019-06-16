@@ -1,68 +1,66 @@
 const control = (function() {
   let socket;
-  const carStart = function() {
+  function carStart() {
     socket.emit('car-command', 'front');
   };
-  const carStop = function() {
-    socket.emit('car-command', 'pause');
+  function carStop() {
+    socket.emit('car-command', 'stop');
   };
-  const carLeft = function() {
+  function carLeft() {
     socket.emit('car-command', 'left');
   };
-  const carRight = function() {
+  function carRight() {
     socket.emit('car-command', 'right');
   };
-  const servoStart = function() {
+  function servoStart() {
     socket.emit('car-command', 'servo start');
   };
-  const servoStop = function() {
+  function servoStop() {
     socket.emit('car-command', 'servo stop');
   };
+  function rotUnc() {
+    socket.emit('car-command', 'rot unc');
+  };
+  function rotClo() {
+    socket.emit('car-command', 'rot clo');
+  };
+  function rotStop() {
+    socket.emit('car-command', 'rot stop');
+  }
+  function xStop() {
+    socket.emit('car-command', 'x stop'); 
+  }
 
-  const init = function() {
+  function init() {
     socket = io('/browser');
-    const btnStart = document.getElementById('carStart');
-    btnStart.addEventListener('click', function() {
-      carStart();
-    });
-    const btnStop  = document.getElementById('carStop');
-    btnStop.addEventListener('click', function() {
-      carStop();
-    });
+    $('.btn-start').click(carStart);
+    $('.btn-stop').click(carStop);
     const btnLeft  = document.getElementById('carLeft');
-    btnLeft.addEventListener('mousedown', function() {
-      carLeft();
-    });
-    btnLeft.addEventListener('mouseup', function() {
-      carStart();
-    });
-    btnLeft.addEventListener('touchstart', function() {
-      carLeft();
-    });
-    btnLeft.addEventListener('touchend', function() {
-      carStart();
-    });
+    btnLeft.addEventListener('mousedown', carLeft);
+    btnLeft.addEventListener('mouseup', xStop);
+    btnLeft.addEventListener('touchstart', carLeft);
+    btnLeft.addEventListener('touchend', xStop);
     const btnRight  = document.getElementById('carRight');
-    btnRight.addEventListener('mousedown', function() {
-      carRight();
-    });
-    btnRight.addEventListener('mouseup', function() {
-      carStart();
-    });
-    btnRight.addEventListener('touchstart', function() {
-      carRight();
-    });
-    btnRight.addEventListener('touchend', function() {
-      carStart();
-    });
-    document.getElementById('servoStart').addEventListener('click', servoStart);
-    document.getElementById('servoStop').addEventListener('click', servoStop);
+    btnRight.addEventListener('mousedown', carRight);
+    btnRight.addEventListener('mouseup', xStop);
+    btnRight.addEventListener('touchstart', carRight);
+    btnRight.addEventListener('touchend', xStop);
+    document.getElementById('rotateClo').addEventListener('mousedown', rotClo);
+    document.getElementById('rotateClo').addEventListener('mouseup', rotStop);
+    document.getElementById('rotateClo').addEventListener('touchstart', rotClo);
+    document.getElementById('rotateClo').addEventListener('touchstop', rotStop);
+    document.getElementById('rotateUnc').addEventListener('mousedown', rotUnc);
+    document.getElementById('rotateUnc').addEventListener('mouseup', rotStop);
+    document.getElementById('rotateUnc').addEventListener('touchstart', rotUnc);
+    document.getElementById('rotateUnc').addEventListener('touchstop', rotStop);
     document.getElementById('carBack').addEventListener('click', function() {
       socket.emit('car-command', 'back');
     });
-    document.getElementById('sonicScan').addEventListener('click', function() {
-      socket.emit('car-command', 'sonic scan');
-    });
+    // document.getElementById('servoStart').addEventListener('click', servoStart);
+    // document.getElementById('servoStop').addEventListener('click', servoStop);
+    // document.getElementById('sonicScan').addEventListener('click', function() {
+      // socket.emit('car-command', 'sonic scan');
+    // });
   };
   return {
     init: init

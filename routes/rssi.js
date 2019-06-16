@@ -4,6 +4,7 @@ const router = express.Router();
 
 const rssiSocket = require('../socket/rssi');
 const mongodbRssi = require('../mongo/mongo.rssi');
+const io = require('../socket/experiment');
 
 const deviceFilterEnabled = true;
 const deviceFilter = [
@@ -11,7 +12,13 @@ const deviceFilter = [
   "3C:A3:08:AC:37:BB",
   "D4:36:39:BC:08:F3",
   "34:15:13:1A:E4:6A",
-  "00:15:83:31:7E:6A"
+
+  "00:15:83:31:7E:6A",
+
+  "00:15:83:31:7E:72",
+  "00:15:83:31:7E:F4",
+  "00:15:83:31:7E:34",
+  "00:15:83:00:E9:F8",
 ];
 
 router.post('/', function (req, res) {
@@ -22,6 +29,7 @@ router.post('/', function (req, res) {
   const tag = req.body.tags;
   const scanGroup = req.body.scanGroup;
   const phone = req.body.phone;
+  const needPair = !!(req.body.needPair);
   let distance = req.body.distance;
   let angle = [req.body.anglePhi, req.body.angleTheta];
 
@@ -51,13 +59,31 @@ router.post('/', function (req, res) {
 
   // trigger socket and database event
   if(!deviceFilterEnabled || deviceFilter.indexOf(device) > -1) {
-    rssiSocket.rssiAdd(device, rssi, timestamp, tag);
-    rssiSocket.rssiAddV2(record);
-    mongodbRssi.addHandler(record);
+    if(needPair) {
+      io.experiment.getDirection(timestamp).then(function(data) {
+        // console.log('aaa');
+        record.angle[0] = data.phi;
+        record.angle[1] = data.theta;
+        io.experiment.getDistance(timestamp).then(function(data) {
+          // console.log('distance data', data);
+          record.distance = data.distance;
+          rssiSocket.rssiAddV2(record);
+          mongodbRssi.addHandler(record);
+          console.log('pair and save', record);
+        }).catch(function (err) {
+          console.error('cannot pair data distance', record, err);
+        });
+      }).catch(function (err) {
+        console.error('cannot pair data angle', record, err);
+      })
+    } else {
+      rssiSocket.rssiAddV2(record);
+      mongodbRssi.addHandler(record);
+      console.log('no pair save', record);
+    }
   }
 
   // reply
-  console.log('upload received', req.body);
   if (device && rssi && timestamp) {
     res.send("upload success");
   } else {

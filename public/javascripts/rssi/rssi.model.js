@@ -7,10 +7,10 @@ rssi.model = (function () {
     socket.on('connect', function () {
       console.log('rssi socket.io connected');
     });
-    socket.on('rssi-record', function (data) {
+    socket.on('rssi-record-v2', function (data) {
       const record = {
-        rssi: data.rssi,
-        timestamp: data.timestamp,
+        rssi: data.RSSI,
+        timestamp: data.time,
         tag: data.tag
       };
       const deviceRecords = rssiRecords.filter(function (item) {

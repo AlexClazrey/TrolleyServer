@@ -657,6 +657,7 @@
     '<div class="row">' +
     '<h3>{{ title }}</h3>' +
     '</div>' +
+    '<vue-line-p title="样本数" :text="records.length" size="16px" left-col="0" :no-mb="true"></vue-line-p>' +
     '<vue-line-p title="平均数" :text="rssiMean" size="16px" left-col="0" :no-mb="true"></vue-line-p>' +
     '<vue-line-p title="众数" :text="rssiMode" size="16px" left-col="0" :no-mb="true"></vue-line-p>' +
     '<vue-line-p title="中位数" :text="rssiMedian" size="16px" left-col="0" :no-mb="true"></vue-line-p>' +

@@ -1,8 +1,8 @@
-rssiStat.vue = (function() {
+rssiStat.vue = (function () {
   "use strict";
-  const overview = (function() {
+  const overview = (function () {
     const comp = {};
-    const onMount = function() {
+    const onMount = function () {
       comp.comp = new Vue({
         el: '#rssi-stat',
         data: {
@@ -17,32 +17,36 @@ rssiStat.vue = (function() {
           hideTable: false,
         },
         computed: {
-          scanGroupTexts: function() {
-            return this.scanGroupRecords.map(function(item) {
+          scanGroupTexts: function () {
+            return this.scanGroupRecords.sort(function(a, b) {
+              if(a.minTime < b.minTime) return 1;
+              if(a.minTime > b.minTime) return -1;
+              return 0;
+            }).map(function (item) {
               return {
-                name : `标签 ${item.tag || '未定义'} 开始时间 ${moment(item.minTime).format('MM-DD LTS')} 结束时间 ${moment(item.maxTime).format('MM-DD LTS')}`,
+                name: `标签 ${item.tag || '未定义'} 开始时间 ${moment(item.minTime).format('MM-DD LTS')} 结束时间 ${moment(item.maxTime).format('MM-DD LTS')}`,
                 value: item._id
               };
             });
           },
         },
         methods: {
-          getScanGroups: function() {
+          getScanGroups: function () {
             rssiStat.model.getScanGroups().then(data => {
               this.scanGroupRecords = data;
             });
           },
-          getRssiRecords: function() {
+          getRssiRecords: function () {
             rssiStat.model.queryRssiWithScanGroup(this.selectedScanGroup).then(data => {
               this.rssiRecords = {};
               data.forEach(this.addRecordHandler);
               this.refreshRssiTable();
             });
           },
-          scanGroupSelectChange: function(value) {
-            if(this.selectedScanGroup !== value) {
+          scanGroupSelectChange: function (value) {
+            if (this.selectedScanGroup !== value) {
               this.selectedScanGroup = value;
-              if(this.selectedScanGroup !== '') {
+              if (this.selectedScanGroup !== '') {
                 this.getRssiRecords();
               } else {
                 this.rssiRecords = {};
@@ -50,27 +54,32 @@ rssiStat.vue = (function() {
               }
             }
           },
-          refreshRssiTable: function() {
+          refreshRssiTable: function () {
             this.rssiRecordsArray = Object.values(this.rssiRecords);
+            this.rssiRecordsArray.sort(function (a, b) {
+              if (a[0].device < b[0].device) return -1;
+              if (a[0].device > b[0].device) return 1;
+              return 0;
+            });
           },
-          addRecordHandler: function(item) {
+          addRecordHandler: function (item) {
             const device = item.device;
-            if(this.rssiRecords[device]) {
+            if (this.rssiRecords[device]) {
               this.rssiRecords[device].push(item);
             } else {
               this.rssiRecords[device] = [item];
             }
           },
-          hideTableHandler: function() {
+          hideTableHandler: function () {
             this.hideTable = true;
           },
-          showTableHandler: function() {
+          showTableHandler: function () {
             this.hideTable = false;
           }
         }
       });
     };
-    const onChange = function() {
+    const onChange = function () {
       comp.comp.getScanGroups();
       // comp.comp.getRssiRecords();
     };
