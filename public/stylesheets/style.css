@@ -1,7 +1,7 @@
 a {
   color: #00B7FF; }
 
-button.btn-lg {
+button.btn-lg, button.btn-rotate {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
